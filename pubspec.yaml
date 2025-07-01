@@ -1,0 +1,25 @@
+name: api_request_handler
+description: "A package for handling API requests with Dio with cache functionality and auto cancel duplicate requests."
+version: 0.0.2
+homepage:
+
+environment:
+  sdk: ^3.6.1
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  dio: ^5.8.0+1
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  path_provider: ^2.1.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  build_runner: ^2.4.15
+  hive_generator: ^2.0.1
+
+flutter:
