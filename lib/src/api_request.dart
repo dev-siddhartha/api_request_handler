@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'api_client.dart';
 import 'cache_service.dart';
 
@@ -105,8 +106,10 @@ class ApiRequest {
       if (cachedData != null) return cachedData;
     }
 
-    final CancelToken cancelToken = CancelToken();
-    _cancelTokens[cacheKey] = cancelToken;
+    final CancelToken? cancelToken = kIsWeb ? null : CancelToken();
+    if (cancelToken != null) {
+      _cancelTokens[cacheKey] = cancelToken;
+    }
 
     Dio apiDio;
     if (isThirdParty && thirdPartyBaseUrl != null) {
@@ -140,7 +143,9 @@ class ApiRequest {
     } on DioException catch (e) {
       return _handleNetworkError(e);
     } finally {
-      _cancelTokens.remove(cacheKey);
+      if (cancelToken != null) {
+        _cancelTokens.remove(cacheKey);
+      }
     }
   }
 
@@ -155,7 +160,7 @@ class ApiRequest {
     Object? data,
     Map<String, String>? headers,
     String? contentType,
-    CancelToken cancelToken,
+    CancelToken? cancelToken,
   ) async {
     // Ensure 'data' is either a Map<String, dynamic> or a FormData instance
     assert(
@@ -174,31 +179,31 @@ class ApiRequest {
         return await apiDio.get(endpoint,
             queryParameters: params,
             options: options,
-            cancelToken: cancelToken);
+            cancelToken: cancelToken ?? CancelToken());
       case RequestMethod.post:
         return await apiDio.post(endpoint,
             data: data,
             queryParameters: params,
             options: options,
-            cancelToken: cancelToken);
+            cancelToken: cancelToken ?? CancelToken());
       case RequestMethod.put:
         return await apiDio.put(endpoint,
             data: data,
             queryParameters: params,
             options: options,
-            cancelToken: cancelToken);
+            cancelToken: cancelToken ?? CancelToken());
       case RequestMethod.patch:
         return await apiDio.patch(endpoint,
             data: data,
             queryParameters: params,
             options: options,
-            cancelToken: cancelToken);
+            cancelToken: cancelToken ?? CancelToken());
       case RequestMethod.delete:
         return await apiDio.delete(endpoint,
             data: data,
             queryParameters: params,
             options: options,
-            cancelToken: cancelToken);
+            cancelToken: cancelToken ?? CancelToken());
     }
   }
 
@@ -220,7 +225,9 @@ class ApiRequest {
         message = 'Request Cancelled';
         break;
       case DioExceptionType.badCertificate:
-        message = 'Bad Certificate';
+        if (!kIsWeb) {
+          message = 'Bad Certificate';
+        }
         break;
       default:
         try {

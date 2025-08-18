@@ -1,6 +1,6 @@
 name: api_request_handler
 description: "A package for handling API requests with Dio with cache functionality and auto cancel duplicate requests."
-version: 0.0.2
+version: 0.0.3
 homepage:
 
 environment:

@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 import 'package:path_provider/path_provider.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -7,10 +7,12 @@ class CacheService {
   static const String _cacheBox = "api_cache";
 
   Future<void> init() async {
-    String path = Platform.isIOS
-        ? (await getApplicationSupportDirectory()).path
-        : (await getApplicationDocumentsDirectory()).path;
-    await Hive.initFlutter(path);
+    if (kIsWeb) {
+      await Hive.initFlutter();
+    } else {
+      String path = (await getApplicationDocumentsDirectory()).path;
+      await Hive.initFlutter(path);
+    }
     await Hive.openBox(_cacheBox);
   }
 
