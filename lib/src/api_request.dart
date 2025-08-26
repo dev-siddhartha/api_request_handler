@@ -91,7 +91,7 @@ class ApiRequest {
     bool forceRefresh = false,
     bool isThirdParty = false,
     String? thirdPartyBaseUrl,
-    String clientName = 'default',
+    String clientName = 'consumer',
   }) async {
     // Ensure 'data' is either a [Map<String, dynamic>] or a [FormData] instance
     assert(
